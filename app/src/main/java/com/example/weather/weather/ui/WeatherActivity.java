@@ -7,7 +7,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.weather.R;
-import com.example.weather.components.cites_saerch_view.ISearchListener;
+import com.example.weather.components.cities_search_view.ISearchListener;
 import com.example.weather.databinding.ActivityWeatherBinding;
 import com.example.weather.general.BaseActivity;
 import com.example.weather.utils.Injection;
@@ -31,30 +31,27 @@ public class WeatherActivity extends BaseActivity implements ISearchListener {
         binding.setViewModel(this.viewModel);
         binding.setLifecycleOwner(this);
 
-        binding.searchCites.setSearchListener(this);
+        binding.searchCities.setSearchListener(this);
 
         viewModel.listCites.observe(this, resultNetwork -> {
-
+            binding.progressBar.setVisibility(resultNetwork.getStatusProgressBar());
             switch (resultNetwork.status) {
                 case LOADING:
-                    binding.progressBar.setVisibility(View.VISIBLE);
                     break;
                 case ERROR: {
                     if(resultNetwork.error != null)
                         showError(resultNetwork.error);
-                    binding.progressBar.setVisibility(View.INVISIBLE);
                     break;
                 }
                 case SUCCESS: {
                     if(resultNetwork.data != null)
-                        binding.searchCites.setCites(resultNetwork.data);
-                    binding.progressBar.setVisibility(View.INVISIBLE);
+                        binding.searchCities.setCities(resultNetwork.data);
                 }
             }
         });
 
         viewModel.cityWeather.observe(this, resultNetwork -> {
-            binding.progressBar.setVisibility(resultNetwork.status == ResultType.LOADING ? View.VISIBLE : View.INVISIBLE  );
+            binding.progressBar.setVisibility(resultNetwork.getStatusProgressBar());
             if (resultNetwork.status == ResultType.ERROR && resultNetwork.error != null) {
                 showError(resultNetwork.error);
             }
@@ -68,7 +65,7 @@ public class WeatherActivity extends BaseActivity implements ISearchListener {
 
     @Override
     public void onSearchTextChanged(String query) {
-        viewModel.updateCites(query);
+        viewModel.updateCities(query);
     }
 
     @Override

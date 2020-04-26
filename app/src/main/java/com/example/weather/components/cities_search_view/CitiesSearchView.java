@@ -1,4 +1,4 @@
-package com.example.weather.components.cites_saerch_view;
+package com.example.weather.components.cities_search_view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,23 +18,23 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 
-public class CitesSearchView extends SearchView implements SearchView.OnSuggestionListener{
+public class CitiesSearchView extends SearchView implements SearchView.OnSuggestionListener{
 
-    List<City> cites = Collections.emptyList();
+    List<City> cities = Collections.emptyList();
     private SimpleCursorAdapter suggestionAdapter;
     private ISearchListener searchListener = null;
 
-    public CitesSearchView(Context context) {
+    public CitiesSearchView(Context context) {
         super(context);
         init();
     }
 
-    public CitesSearchView(Context context, AttributeSet attrs) {
+    public CitiesSearchView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public CitesSearchView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CitiesSearchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -73,8 +73,8 @@ public class CitesSearchView extends SearchView implements SearchView.OnSuggesti
                 .subscribe(text -> searchListener.onSearchTextChanged(text));
     }
 
-    public void setCites(List<City> cites) {
-        this.cites = cites;
+    public void setCities(List<City> cities) {
+        this.cities = cities;
         showSuggestion();
     }
 
@@ -90,16 +90,16 @@ public class CitesSearchView extends SearchView implements SearchView.OnSuggesti
 
     @Override
     public boolean onSuggestionClick(int position) {
-        this.setQuery(cites.get(position).formatted_address, true);
+        this.setQuery(cities.get(position).formatted_address, true);
         if (this.searchListener != null)
-            this.searchListener.onSelectCity(cites.get(position).geometry.location.lat, cites.get(position).geometry.location.lng, cites.get(position).formatted_address);
+            this.searchListener.onSelectCity(cities.get(position).geometry.location.lat, cities.get(position).geometry.location.lng, cities.get(position).formatted_address);
         return true;
     }
 
     private void showSuggestion() {
         final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "cityName"});
-        for (int i = 0; i < cites.size(); i++)
-            c.addRow(new Object[]{i, cites.get(i).formatted_address});
+        for (int i = 0; i < cities.size(); i++)
+            c.addRow(new Object[]{i, cities.get(i).formatted_address});
 
         suggestionAdapter.changeCursor(c);
     }

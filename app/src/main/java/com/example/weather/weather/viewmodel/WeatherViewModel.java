@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.weather.model.data.city.City;
-import com.example.weather.model.data.city.ResultCites;
+import com.example.weather.model.data.city.ResultCities;
 import com.example.weather.model.data.weather.Weather;
 import com.example.weather.utils.ResultNetwork;
 import com.example.weather.weather.data.WeatherRepository;
@@ -28,13 +28,13 @@ public class WeatherViewModel extends ViewModel {
     }
 
     @SuppressLint("CheckResult")
-    public void updateCites(String nameCity){
-        weatherRepository.getCityesByName(nameCity)
+    public void updateCities(String nameCity){
+        weatherRepository.getCitiesByName(nameCity)
                 .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe((d) -> listCites.postValue(ResultNetwork.loading()))
                 .subscribe(
-                        result -> listCites.setValue(ResultNetwork.success(((ResultCites)result).results )),
+                        result -> listCites.setValue(ResultNetwork.success(((ResultCities)result).results )),
                         throwable -> listCites.setValue(ResultNetwork.error((Throwable)throwable))
                 );
     }

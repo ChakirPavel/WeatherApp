@@ -1,4 +1,4 @@
-package com.example.weather.components.cites_saerch_view;
+package com.example.weather.components.cities_search_view;
 
 public interface ISearchListener {
     void onSearchTextChanged(String query);

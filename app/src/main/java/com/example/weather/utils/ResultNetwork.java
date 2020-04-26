@@ -1,5 +1,7 @@
 package com.example.weather.utils;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -18,6 +20,10 @@ public class ResultNetwork<T> {
         this.status = status;
         this.data = data;
         this.error = error;
+    }
+
+    public int getStatusProgressBar(){
+        return status == ResultType.LOADING ? View.VISIBLE : View.INVISIBLE;
     }
 
     public static ResultNetwork loading() {

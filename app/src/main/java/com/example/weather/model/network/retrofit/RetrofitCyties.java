@@ -10,5 +10,5 @@ import retrofit2.http.Query;
 public interface RetrofitCytes {
     @Headers("User-Agent: CityWeatherApp")
     @GET("textsearch/json")
-    Single<ResultCites> getCites(@Query("query") String cityName, @Query("key") String key);
+    Single<ResultCites> getCities(@Query("query") String cityName, @Query("key") String key);
 }
