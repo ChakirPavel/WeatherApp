@@ -1,7 +1,6 @@
 package com.example.weather.weather.ui;
 
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
@@ -33,7 +32,7 @@ public class WeatherActivity extends BaseActivity implements ISearchListener {
 
         binding.searchCities.setSearchListener(this);
 
-        viewModel.listCites.observe(this, resultNetwork -> {
+        viewModel.listCities.observe(this, resultNetwork -> {
             binding.progressBar.setVisibility(resultNetwork.getStatusProgressBar());
             switch (resultNetwork.status) {
                 case LOADING:

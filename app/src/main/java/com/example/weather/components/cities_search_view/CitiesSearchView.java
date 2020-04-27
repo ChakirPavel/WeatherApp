@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.MatrixCursor;
 import android.provider.BaseColumns;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.CursorAdapter;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 
@@ -17,12 +19,15 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 public class CitiesSearchView extends SearchView implements SearchView.OnSuggestionListener{
 
     List<City> cities = Collections.emptyList();
     private SimpleCursorAdapter suggestionAdapter;
     private ISearchListener searchListener = null;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public CitiesSearchView(Context context) {
         super(context);
@@ -52,7 +57,11 @@ public class CitiesSearchView extends SearchView implements SearchView.OnSuggest
         this.setSuggestionsAdapter(suggestionAdapter);
         this.setOnSuggestionListener(this);
 
-        Observable.create((ObservableOnSubscribe<String>) emitter -> setOnQueryTextListener(new OnQueryTextListener() {
+        initObserveQuery();
+    }
+
+    private void initObserveQuery(){
+        Disposable disposable = Observable.create((ObservableOnSubscribe<String>) emitter -> setOnQueryTextListener(new OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 emitter.onNext(query);
@@ -71,8 +80,10 @@ public class CitiesSearchView extends SearchView implements SearchView.OnSuggest
                 .distinct()
                 .filter(text -> text.length() >= 2)
                 .subscribe(text -> searchListener.onSearchTextChanged(text));
-    }
 
+        compositeDisposable.add(disposable);
+    }
+    
     public void setCities(List<City> cities) {
         this.cities = cities;
         showSuggestion();
@@ -107,4 +118,6 @@ public class CitiesSearchView extends SearchView implements SearchView.OnSuggest
         final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "cityName"});
         suggestionAdapter.changeCursor(c);
     }
+
+
 }
